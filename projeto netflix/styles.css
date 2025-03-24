@@ -1,0 +1,24 @@
+/* Estilos globais */
+body {
+    font-family: Arial, sans-serif;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.carousel-item img {
+    height: 500px;
+    object-fit: cover;
+}
+
+.movie-card {
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.movie-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
