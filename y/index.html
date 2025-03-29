@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PROJETO NETFLIX</title>
+    <title>PROJETO DO MENINOS</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
@@ -19,96 +19,96 @@
     <script defer src="/__/firebase/11.5.0/firebase-remote-config-compat.js"></script>
     <script defer src="/__/firebase/11.5.0/firebase-performance-compat.js"></script>
     <script defer src="/__/firebase/init.js?useEmulator=true"></script>
-    <style media="screen">
-        body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-        #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-        #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-        #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-        #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-        #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-        #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-        #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-        @media (max-width: 600px) {
-            body, #message { margin-top: 0; background: white; box-shadow: none; }
-            body { border-top: 16px solid #ffa100; }
+    <style>
+        /* Estilo Personalizado para Zoom */
+        .movie-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .movie-card img {
+            width: 100%;
+            height: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .movie-card:hover img {
+            transform: scale(1.1); /* Efeito de zoom */
+        }
+
+        .movie-card .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .movie-card:hover .overlay {
+            opacity: 1; /* Mostra informações ao passar o mouse */
         }
     </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">Filmes em Cartaz</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="index.html">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="filmes.html">Filmes</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <main>
-        <div id="carouselExample" class="carousel slide">
-            <div class="carousel-inner"></div>
+    <div class="container mt-5">
+        <h2 class="text-center text-light mb-4">Descubra suas próximas histórias</h2>
+        <div id="movies-container" class="row">
+            <!-- Os cards serão carregados aqui dinamicamente -->
         </div>
-        
-        <div id="movieList" class="row"></div>
-        
-        <button id="showFavoritesBtn">Mostrar Favoritos</button>
-        <div id="favoriteMovies" class="row"></div>
-        
-        <div id="movieDetails"></div>
-    </main>
-
-    <footer class="bg-dark text-white text-center py-3 mt-5">
-        <p>&copy; 2023 Filmes em Cartaz</p>
-    </footer>
-
-    <!-- Firebase SDK Loading Message -->
-    <div id="message">
-        <h2>Welcome</h2>
-        <h1>Firebase Hosting Setup Complete</h1>
-        <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-        <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
     </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
 
-    <!-- Bootstrap JS -->
+    <!-- Bootstrap JS (opcional, se precisar de funcionalidades JavaScript) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom Script -->
-    <script src="js/script.js"></script>
-    <!-- Firebase Initialization -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const loadEl = document.querySelector('#load');
+        // Substitua 'SUA_API_KEY' pela sua chave de API do TMDB
+        const API_KEY = '378d279e455281cf6cd09787d6348ffe';
+        const BASE_URL = 'https://api.themoviedb.org/3';
+        const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500'; // URL base para imagens
+
+        // Função para buscar filmes populares
+        async function fetchMovies() {
             try {
-                let app = firebase.app();
-                let features = [
-                    'auth', 
-                    'database', 
-                    'firestore',
-                    'functions',
-                    'messaging', 
-                    'storage', 
-                    'analytics', 
-                    'remoteConfig',
-                    'performance',
-                ].filter(feature => typeof app[feature] === 'function');
-                loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-            } catch (e) {
-                console.error(e);
-                loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
+                const response = await fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&language=pt-BR`);
+                const data = await response.json();
+                displayMovies(data.results);
+            } catch (error) {
+                console.error('Erro ao buscar filmes:', error);
             }
-        });
+        }
+
+        // Função para exibir os filmes na página
+        function displayMovies(movies) {
+            const container = document.getElementById('movies-container');
+            container.innerHTML = ''; // Limpa o conteúdo anterior
+
+            movies.forEach(movie => {
+                const card = document.createElement('div');
+                card.classList.add('col-md-3', 'mb-4');
+
+                card.innerHTML = `
+                    <a href="https://www.themoviedb.org/movie/${movie.id}" target="_blank" class="text-decoration-none">
+                        <div class="movie-card">
+                            <img src="${movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : 'https://via.placeholder.com/300x450'}" alt="${movie.title}" class="img-fluid">
+                            <div class="overlay">
+                                <h5 class="text-light">${movie.title}</h5>
+                                <p class="text-light">${movie.overview.slice(0, 100)}...</p>
+                            </div>
+                        </div>
+                    </a>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Inicializa a busca de filmes ao carregar a página
+        fetchMovies();
     </script>
 </body>
 </html>
