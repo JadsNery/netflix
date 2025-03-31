@@ -1,0 +1,15 @@
+/meu-projeto-filmes
+│
+├── index.html          # Página principal
+├── css/
+│   └── styles.css      # Arquivo de estilos
+├── js/
+│   ├── app.js          # JavaScript principal (lógica de busca e interação)
+│   ├── header.js       # Lógica do cabeçalho
+│   ├── footer.js       # Lógica do rodapé
+│   ├── carousel.js     # Lógica do carrossel de filmes
+│   ├── modal.js        # Lógica do modal para detalhes dos filmes
+│   └── search.js       # Lógica de pesquisa de filmes
+└── assets/             # Pasta para imagens, fontes, etc.
+    ├── images/         # Imagens (ex: pôsteres dos filmes)
+    └── fonts/          # Fontes
