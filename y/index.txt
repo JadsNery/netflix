@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROJETO DO MENINOS</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Firebase SDK -->
+    <script defer src="/__/firebase/11.5.0/firebase-app-compat.js"></script>
+    <script defer src="/__/firebase/11.5.0/firebase-auth-compat.js"></script>
+    <script defer src="/__/firebase/11.5.0/firebase-database-compat.js"></script>
+    <script defer src="/__/firebase/11.5.0/firebase-firestore-compat.js"></script>
+    <script defer src="/__/firebase/11.5.0/firebase-functions-compat.js"></script>
+    <script defer src="/__/firebase/11.5.0/firebase-messaging-compat.js"></script>
+    <script defer src="/__/firebase/11.5.0/firebase-storage-compat.js"></script>
+    <script defer src="/__/firebase/11.5.0/firebase-analytics-compat.js"></script>
+    <script defer src="/__/firebase/11.5.0/firebase-remote-config-compat.js"></script>
+    <script defer src="/__/firebase/11.5.0/firebase-performance-compat.js"></script>
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+    <style>
+        /* Estilo Personalizado para Zoom */
+        .movie-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .movie-card img {
+            width: 100%;
+            height: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .movie-card:hover img {
+            transform: scale(1.1); /* Efeito de zoom */
+        }
+
+        .movie-card .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .movie-card:hover .overlay {
+            opacity: 1; /* Mostra informações ao passar o mouse */
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center text-light mb-4">Descubra suas próximas histórias</h2>
+        <div id="movies-container" class="row">
+            <!-- Os cards serão carregados aqui dinamicamente -->
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (opcional, se precisar de funcionalidades JavaScript) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Substitua 'SUA_API_KEY' pela sua chave de API do TMDB
+        const API_KEY = '378d279e455281cf6cd09787d6348ffe';
+        const BASE_URL = 'https://api.themoviedb.org/3';
+        const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500'; // URL base para imagens
+
+        // Função para buscar filmes populares
+        async function fetchMovies() {
+            try {
+                const response = await fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&language=pt-BR`);
+                const data = await response.json();
+                displayMovies(data.results);
+            } catch (error) {
+                console.error('Erro ao buscar filmes:', error);
+            }
+        }
+
+        // Função para exibir os filmes na página
+        function displayMovies(movies) {
+            const container = document.getElementById('movies-container');
+            container.innerHTML = ''; // Limpa o conteúdo anterior
+
+            movies.forEach(movie => {
+                const card = document.createElement('div');
+                card.classList.add('col-md-3', 'mb-4');
+
+                card.innerHTML = `
+                    <a href="https://www.themoviedb.org/movie/${movie.id}" target="_blank" class="text-decoration-none">
+                        <div class="movie-card">
+                            <img src="${movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : 'https://via.placeholder.com/300x450'}" alt="${movie.title}" class="img-fluid">
+                            <div class="overlay">
+                                <h5 class="text-light">${movie.title}</h5>
+                                <p class="text-light">${movie.overview.slice(0, 100)}...</p>
+                            </div>
+                        </div>
+                    </a>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Inicializa a busca de filmes ao carregar a página
+        fetchMovies();
+    </script>
+</body>
+</html>
